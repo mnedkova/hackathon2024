@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Food Search</title>
+   <style>
+       body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+       .container { max-width: 400px; width: 100%; padding: 20px; }
+       input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; }
+       button { padding: 10px 20px; cursor: pointer; }
+       .results { margin-top: 20px; }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <h1>Search for Food</h1>
+       <input type="text" id="foodName" placeholder="Enter food name" />
+       <button onclick="searchFood()">Search</button>
+       <div id="results" class="results"></div>
+   </div>
+
+
+   <script>
+       function searchFood() {
+           const foodName = document.getElementById("foodName").value;
+           if (!foodName) {
+               alert("Please enter a food name.");
+               return;
+           }
+
+
+           fetch(`/search?foodName=${encodeURIComponent(foodName)}`)
+               .then(response => response.json())
+               .then(data => {
+                   const resultsDiv = document.getElementById("results");
+                   resultsDiv.innerHTML = "";
+
+
+                   if (data.error) {
+                       resultsDiv.innerHTML = `<p>${data.error}</p>`;
+                   } else if (data.message) {
+                       resultsDiv.innerHTML = `<p>${data.message}</p>`;
+                   } else {
+                       data.forEach(item => {
+                           resultsDiv.innerHTML += `
+                               <div>
+                                   <p><strong>Meal:</strong> ${item.meal}</p>
+                                   <p><strong>Food:</strong> ${item.food}</p>
+                                   <p><strong>Location:</strong> ${item.location}</p>
+                                   <p><strong>Date:</strong> ${item.date}</p>
+                               </div><hr>
+                           `;
+                       });
+                   }
+               })
+               .catch(error => console.error('Error:', error));
+       }
+   </script>
+</body>
+</html>
