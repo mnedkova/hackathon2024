@@ -1,9 +1,9 @@
 # FoodFinder
 
 For downloads, you need to install Angular CLI and Node.js. 
-npm install -g @angular/cli - to install Angular
+run the command without quotes, "npm install -g @angular/cli" - to install Angular
 to test, you can try typing npm or ng in your terminal, (ng version) checks version
-then ng serve --open to make an open a server on your laptop
+then "ng serve --open" to make an open a server on your laptop
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.11.
 
