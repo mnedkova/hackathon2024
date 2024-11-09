@@ -16,19 +16,26 @@ if select_me:
     #extracts data from each option 
     for options in opt:
         dat_val = options['value']
-    #requests for each date that we get 
+    # prints the dates
+        print(f"Menu for date {dat_val}")
+    #requests for each date that we get
         r = requests.get(f'{base_url}{dat_val}')
         day = BeautifulSoup(r.content, 'html.parser')
 
         food_items = day.find_all('li')
-        print(f"Menu for date {dat_val}")
-
+        
+        #allows us to get the food from the menu
         soup = BeautifulSoup(r.content, 'html.parser')
-        dish_name = soup.find_all('a')
+        dish_name = soup.find_all('a', {'data-dish-name':True})
 
         for dish in dish_name:
             name = dish.get('data-dish-name')
             if name:
-                print(f"Dish: {name}")
+                ##!!! Issue: printing only the first word of the food name in the menu
+
+                ##I have no idea what is causing the issue for only one word to print
+                print(f"Dish: {name.strip()}")
         
         print()
+
+
