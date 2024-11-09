@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+import json
 ##FoodDB:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQxYWI0M2Q3OWRhNGQ0ZTY4YjA5MjEzN2Y0YTI4YzcyOSQ3NjM4NjRjYzUxMDA0MjQwYjhjNmJmMDRlOTIzYmE4OQ==
 
 
@@ -17,6 +18,24 @@ client = Elasticsearch(
 # Successful response!
 client.info()
 # {'name': 'instance-0000000000', 'cluster_name': ...}
+
+
+def send_json_to_elasticsearch(file_path, index_name):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    
+    response = client.index(index=index_name, document=data)
+
+    print("Elastic search response: ", response)
+
+
+send_json_to_elasticsearch('data.json', 'FoodDB')
+
+
+
+
+
+
 
 
 
