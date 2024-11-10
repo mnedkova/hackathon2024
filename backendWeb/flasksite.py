@@ -9,7 +9,7 @@ def index():
 
 @app.route('/search', methods=['GET'])
 def search_food():
-    food_name = request.args.get('foodName')
+    food_name = request.args.get('foodName','').lower()
     if not food_name:
         return jsonify({"error": "No food name provided"}), 400
 
@@ -20,18 +20,15 @@ def search_food():
         location = data["location"]
         
         for item in data["meals"]:
-            if item["food"].lower() == food_name.lower():
+            if food_name in item["food"].lower():
                 results.append({
                     "meal": item["meal"],
-                    "food": food_name,
+                    "food": item["food"],
                     "location": location,
                     "date": date
                 })
     # Return the results or a message if not found
-    if results:
-        return jsonify(results)
-    else:
-        return jsonify({"message": "Sorry, it is not available."}), 404
+    return jsonify(results if results else {"message": "No matches found"}), 200 if results else 404
 
 if __name__ == "__main__":
     app.run(debug=True)

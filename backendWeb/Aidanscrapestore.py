@@ -15,7 +15,6 @@ tid = {1: "Worcester",
        4: "Berkshire"
        }
 
-
 def parseResponse(date_val, location_name, location_id, content):
     # print(content)
     json_file = json.loads(content)
@@ -41,15 +40,13 @@ def parseResponse(date_val, location_name, location_id, content):
             #     print("THERE IS A DISH")
             for dish in dishes:
                 dishes_for_each_meal = {
-                    "meal": meals,
+                    "meal": meals.capitalize(),
                     "category": category,
                     "food": dish.get_text() 
                 }
                 doc_meals.append(dishes_for_each_meal)
     doc["meals"] = doc_meals
     return doc
-
-
 
 menu_data = {}  # Dictionary to hold the data in memory
 
@@ -70,11 +67,7 @@ if select_me:
             
             # Store data in memory
             menu_data[f"{new_date}-{location_name}"] = doc
-
-
-
-
-            
+         
 
 
 

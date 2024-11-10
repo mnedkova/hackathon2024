@@ -85,16 +85,41 @@
        img{
         width:100px;
         height:100px;
+        cursor:pointer;
+        
        }
+       <!-- Drop down styling -->
+       .suggestions {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        max-height: 150px;
+        overflow-y: auto;
+        width: 100%;
+        z-index: 10;
+     }
+     
+     .suggestions div {
+        padding: 10px;
+        cursor: pointer;
+     }
+     
+     .suggestions div:hover {
+        background-color: #f0f0f0;
+     }
+     
    </style>
 </head>
 <body>
    <div class="container">
-        <img src="https://media.discordapp.net/attachments/1303091710636593254/1304937879251845250/image.png?ex=6731359a&is=672fe41a&hm=9c78eb49ef3723c03bb87453fa9e9faf80b28f09bcb2e0aee296674bca7edb7a&=&format=webp&quality=lossless&width=625&height=625">
+        <img src="https://media.discordapp.net/attachments/1303091710636593254/1304937879251845250/image.png?ex=6731359a&is=672fe41a&hm=9c78eb49ef3723c03bb87453fa9e9faf80b28f09bcb2e0aee296674bca7edb7a&=&format=webp&quality=lossless&width=625&height=625" alt="UMass Food Finder Logo" onclick="window.location.href = '/';">
        <h1>UMass Food Finder</h1>
-       <input type="text" id="foodName" placeholder="Enter food name" />
+        <!--Drop down menu -->
+       <input type="text" id="foodName" placeholder="Enter food name" onkeyup="showSuggestions()" />
+       <div id="suggestions" class="suggestions"></div>
        <button onclick="searchFood()">Search</button>
-
+       
        <div id="results" class="results">
            <!-- Worcester Dining Hall -->
            <div id="Worcester" class="location">
@@ -168,6 +193,42 @@
                })
                .catch(error => console.error('Error:', error));
        }
+       function showSuggestions() {
+        const foodName = document.getElementById("foodName").value;
+        if (foodName.length < 2) {
+            document.getElementById("suggestions").innerHTML = "";  // Clear if input is too short
+            return;
+        }
+    
+        fetch(`/search?foodName=${encodeURIComponent(foodName)}`)
+            .then(response => response.json())
+            .then(data => {
+                const suggestions = document.getElementById("suggestions");
+                suggestions.innerHTML = "";  // Clear previous suggestions
+                const MAX_SUGGESTIONS = 7; // Amount of suggestions
+                const addedFoods = new Set(); // Set to avoid duplicates
+                
+                if (data.error || data.message) {
+                    suggestions.innerHTML = `<div>${data.message || data.error}</div>`;
+                } else {
+                    data.slice(0, MAX_SUGGESTIONS).forEach(item => {
+                        if (!addedFoods.has(item.food)) { // Check if already added
+                            addedFoods.add(item.food); // Mark this food as added
+    
+                            const suggestionDiv = document.createElement("div");
+                            suggestionDiv.innerText = item.food;
+                            suggestionDiv.onclick = () => {
+                                document.getElementById("foodName").value = item.food;
+                                suggestions.innerHTML = "";  // Clear suggestions after selection
+                                searchFood();  
+                            };
+                            suggestions.appendChild(suggestionDiv);
+                        }
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
    </script>
 </body>
 </html>
